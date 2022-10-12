@@ -13,14 +13,24 @@ from src.person import Person
 #
 # font_h_ = 20
 
-w_start = 27
-w_end = 800
-w_num = 35
-h_start = 200
-h_end = 1080
-h_num = 20
-font_size = 10
+#左侧显示玩家范围
+w_left_start = 27
+w_left_end = 800
+h_left_start = 200
+h_left_end = 1080
 
+#右侧显示玩家范围
+w_right_start = 1000
+w_right_end = 1900
+h_right_start = 200
+h_right_end = 1080
+
+# 玩家 左右空间位置步长
+w_num = 35
+h_num = 20
+
+# 字体设置
+font_size = 10
 font_h_ = 20
 
 
@@ -48,19 +58,36 @@ class Scene:
 
     def init_pos(self, ):
         # 用于在线性空间中以均匀步长生成数字序列
-        w_pos = list(np.linspace(w_start, w_end, num=w_num, endpoint=True))
-        h_pos = list(np.linspace(h_start, h_end, num=h_num, endpoint=True))
+        w_left_pos = list(np.linspace(w_left_start, w_left_end, num=w_num, endpoint=True))
+        h_left_pos = list(np.linspace(h_left_start, h_left_end, num=h_num, endpoint=True))
+
+        w_right_pos = list(np.linspace(w_right_start, w_right_end, num=w_num, endpoint=True))
+        h_right_pos = list(np.linspace(h_right_start, h_right_end, num=h_num, endpoint=True))
+
         # 位置列表
-        self.pos = {}
-        num = 0
-        for i, h in enumerate(h_pos):
-            for j, w in enumerate(w_pos):
+        self.left_pos = {}
+        self.right_pos = {}
+        left_num = 0
+        for i, h in enumerate(h_left_pos):
+            for j, w in enumerate(w_left_pos):
                 # 当横坐标为奇数时，则纵坐标为偶数
                 # 当横坐标为偶数时，则纵坐标为奇数
                 if (i % 2 == 0) != (j % 2 == 0):
-                    num += 1
-                    self.pos[num] = (int(w), int(h))
-        self.num = num
+                    left_num += 1
+                    self.left_pos[left_num] = (int(w), int(h))
+        self.left_num = left_num
+        
+        right_num = 0
+        for i, h in enumerate(h_right_pos):
+            for j, w in enumerate(w_right_pos):
+                # 当横坐标为奇数时，则纵坐标为偶数
+                # 当横坐标为偶数时，则纵坐标为奇数
+                if (i % 2 == 0) != (j % 2 == 0):
+                    right_num += 1
+                    self.left_pos[right_num] = (int(w), int(h))
+        self.right_num = right_num
+
+
 
     def if_have_ids(self):
         return len(self.ava_ids) > 0
@@ -121,21 +148,21 @@ class Scene:
 
 
 if __name__ == '__main__':
-    w_start = 27
-    w_end = 900
-    w_num = 45
-    h_start = 50
-    h_end = 750
-    h_num = 10
+    w_left_start = 27
+    w_left_end = 800
+    w_num = 35
+    h_left_start = 200
+    h_left_end = 1080
+    h_num = 20
     font_size = 10
 
     font_h_ = 20
 
     # 用于在线性空间中以均匀步长生成数字序列
-    w_pos = list(np.linspace(w_start, w_end, num=w_num, endpoint=True))
+    w_pos = list(np.linspace(w_left_start, w_left_end, num=w_num, endpoint=True))
     print(w_pos)
     # [27.0, 59.43181818181818, 91.86363636363636, 124.29545454545453, 156.72727272727272, 189.1590909090909, 221.59090909090907, 254.02272727272725, 286.45454545454544, 318.8863636363636, 351.3181818181818, 383.75, 416.18181818181813, 448.6136363636363, 481.0454545454545, 513.4772727272727, 545.9090909090909, 578.340909090909, 610.7727272727273, 643.2045454545454, 675.6363636363636, 708.0681818181818, 740.5, 772.9318181818181, 805.3636363636363, 837.7954545454545, 870.2272727272726, 902.6590909090909, 935.090909090909, 967.5227272727273, 999.9545454545454, 1032.3863636363635, 1064.8181818181818, 1097.25, 1129.681818181818, 1162.1136363636363, 1194.5454545454545, 1226.9772727272727, 1259.4090909090908, 1291.840909090909, 1324.2727272727273, 1356.7045454545453, 1389.1363636363635, 1421.5681818181818, 1454.0]
-    h_pos = list(np.linspace(h_start, h_end, num=h_num, endpoint=True))
+    h_pos = list(np.linspace(h_left_start, h_left_end, num=h_num, endpoint=True))
     print(h_pos)
     # [2.0, 58.285714285714285, 114.57142857142857, 170.85714285714286, 227.14285714285714, 283.42857142857144, 339.7142857142857, 396.0, 452.2857142857143, 508.57142857142856, 564.8571428571429, 621.1428571428571, 677.4285714285714, 733.7142857142857, 790.0]
     pos = {}
