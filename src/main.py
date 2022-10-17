@@ -51,6 +51,9 @@ class Game:
                 else:
                     return
 
+                pygame.draw.rect(self.screen, (255, 0, 0),
+                                 (10 + count * 4, 20, 40 - count * 4, 8))
+
             # display
             pygame.display.update()
 

@@ -15,15 +15,15 @@ from src.person import Person
 # font_h_ = 20
 
 # 左侧显示玩家范围
-w_left_start = 27
-w_left_end = 800
-h_left_start = 200
+w_left_start = 60
+w_left_end = 750
+h_left_start = 300
 h_left_end = 1080
 
 # 右侧显示玩家范围
-w_right_start = 1000
-w_right_end = 1900
-h_right_start = 200
+w_right_start = 1070
+w_right_end = 1800
+h_right_start = 300
 h_right_end = 1080
 
 # 玩家 左右空间位置步长
@@ -59,7 +59,7 @@ class Scene:
 
     def prepare_pic(self):
         # self.map = pygame.image.load("pic/map.jpg").convert()
-        self.map = pygame.image.load("/Users/dongqiudi/PycharmProjects/DanmakuGame/image/backgroud.jpg").convert()
+        self.map = pygame.image.load("/Users/dongqiudi/PycharmProjects/DanmakuGame/image/backgroud_v1.png").convert()
         self.r_cell = pygame.image.load("/Users/dongqiudi/PycharmProjects/DanmakuGame/pic/red_cell.png").convert_alpha()
         self.y_cell = pygame.image.load(
             "/Users/dongqiudi/PycharmProjects/DanmakuGame/pic/yello_cell.png").convert_alpha()
