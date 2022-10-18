@@ -33,16 +33,20 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
+            # 总人数
             count = 0
+            l_people = 0
+            r_people = 0
             while not queue.empty() and count < max_comment:
                 # ('bbbbbrent', 'd')
                 # ('bbbbbrent', '加入游戏')
                 chat = queue.get()
                 count += 1
                 if chat[1] == "中国必胜":
+                    l_people+=1
                     self.scene.create_person(chat[0], location="left")
                 elif chat[1] == "法国必胜":
+                    r_people+=1
                     self.scene.create_person(chat[0], location="right")
                 elif chat[1] == "平":
                     self.scene.create_person(chat[0], location="middle")
@@ -50,6 +54,48 @@ class Game:
                     self.scene.change_answer(chat[0], chat[1])
                 else:
                     return
+
+                ##-------bar--------##
+
+                total_width = 350
+
+                l_people = 0
+                r_people = 0
+
+                r_left = 80
+                r_top = 20
+                r_width = (r_people / (l_people + r_people + 1)) * total_width
+                r_height = 20
+
+                b_left = r_left + r_width
+                b_top = 20
+                b_width = (r_people / (l_people + r_people + 1)) * total_width
+                b_height = 20
+
+                rect1 = pygame.Rect(r_left, r_top, r_width, r_height)
+                rect2 = pygame.Rect(b_left, b_top, b_width, b_height)
+
+                f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+                l_text = f.render("中国队：{people}".format(people=l_people), True, (255, 0, 0), None)
+                l_textRect = l_text.get_rect()
+                if l_people == 0:
+                    l_textRect.center = (r_left, r_top + r_height + 10)
+                else:
+                    l_textRect.center = ((r_left + r_width) / 2, r_top + r_height + 10)
+
+                r_text = f.render("法国队：{people}".format(people=r_people), True, (200, 0, 0), None)
+                r_textRect = r_text.get_rect()
+                if r_people == 0:
+                    r_textRect.center = (b_left, r_top + r_height + 10)
+                else:
+                    r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
+
+                title_text = f.render("总支持人数： ", True, (200, 0, 0), None)
+                title_textRect = title_text.get_rect()
+                title_textRect.center = (40, 30)
+
+                ##------------------##
+
 
                 pygame.draw.rect(self.screen, (255, 0, 0),
                                  (10 + count * 4, 20, 40 - count * 4, 8))

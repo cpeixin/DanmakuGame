@@ -22,26 +22,42 @@ pygame.display.set_caption("Python Demo")
 
 clock = pygame.time.Clock()
 
-total_width = 300
+total_width = 350
 
 r_people = 0
 b_people = 0
 
-
-r_left = 20
+r_left = 80
 r_top = 20
 r_width = (r_people / (r_people + b_people + 1)) * total_width
 r_height = 20
 
-b_left = r_left+r_width
+b_left = r_left + r_width
 b_top = 20
 b_width = (b_people / (r_people + b_people + 1)) * total_width
 b_height = 20
-               # left, top, width, height
+
 rect1 = pygame.Rect(r_left, r_top, r_width, r_height)
-# rect2 = pygame.Rect(50, 50, 200, 200)
 rect2 = pygame.Rect(b_left, b_top, b_width, b_height)
 
+f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+l_text = f.render("中国队：{people}".format(people=r_people), True, (255, 0, 0), None)
+l_textRect = l_text.get_rect()
+if r_people == 0:
+    l_textRect.center = (r_left, r_top + r_height + 10)
+else:
+    l_textRect.center = ((r_left + r_width) / 2, r_top + r_height + 10)
+
+r_text = f.render("法国队：{people}".format(people=b_people), True, (200, 0, 0), None)
+r_textRect = r_text.get_rect()
+if b_people == 0:
+    r_textRect.center = (b_left, r_top + r_height + 10)
+else:
+    r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
+
+title_text = f.render("总支持人数： ", True, (200, 0, 0), None)
+title_textRect = title_text.get_rect()
+title_textRect.center = (40, 30)
 
 while True:
     for event in pygame.event.get():
@@ -54,7 +70,9 @@ while True:
     pygame.draw.rect(screen, (255, 0, 0), rect1)
     pygame.draw.rect(screen, (0, 255, 0), rect2)
     # pygame.draw.rect(screen, (0, 0, 255), rect1.fit(rect2))
-
+    screen.blit(l_text, l_textRect)
+    screen.blit(r_text, r_textRect)
+    screen.blit(title_text, title_textRect)
     pygame.display.flip()
 
     clock.tick(10)

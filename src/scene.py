@@ -110,9 +110,6 @@ class Scene:
             return
         if name in self.right_people and location == "right":
             return
-        # if name in self.people or (not self.if_have_ids()):
-        #     return
-
 
         # 此处逻辑 如果位置满了，只展示最新评论的玩家，这样可以刺激大家刷评论
         if location == "left":
