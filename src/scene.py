@@ -34,6 +34,15 @@ h_num = 20
 font_size = 10
 font_h_ = 20
 
+# 得分条
+total_width = 350
+r_left = 80
+r_top = 20
+r_height = 20
+
+b_height = 20
+b_top = 20
+
 
 class Scene:
     def __init__(self, screen):
@@ -126,13 +135,8 @@ class Scene:
             self.left_people_queue.put(name)
             self.render_person(self.left_people[name], location)
             self.left_total_people += 1
+            self.render_score(self.left_total_people, self.right_total_people)
         if location == "right":
-            # id = random.choice(self.right_ava_ids)
-            # self.right_ava_ids.remove(id)
-            # person = Person(id, name, self.font)
-            # self.people[name] = person
-            # self.render_person(self.people[name], location)
-
             if self.if_have_ids(self.right_ava_ids):
                 id = random.choice(self.right_ava_ids)
                 self.right_ava_ids.remove(id)
@@ -146,6 +150,7 @@ class Scene:
             self.right_people_queue.put(name)
             self.render_person(self.right_people[name], location)
             self.right_total_people += 1
+            self.render_score(self.left_total_people, self.right_total_people)
 
     def delete_person(self, name):
         self.ava_ids.append(self.people[name].id)
@@ -172,6 +177,7 @@ class Scene:
     def render_map(self):
         self.screen.blit(self.map, (0, 0))
 
+
     # 指定玩家位置
     def render_person(self, person, location):
         # 改变玩家的颜色
@@ -182,6 +188,44 @@ class Scene:
             self.screen.blit(person.name, (self.left_pos[person.id][0], self.left_pos[person.id][1]))
         if location == "right":
             self.screen.blit(person.name, (self.right_pos[person.id][0], self.right_pos[person.id][1]))
+
+    def render_score(self, left_total_people, right_total_people):
+
+        r_width = (left_total_people / (left_total_people + right_total_people + 1)) * total_width
+        b_left = r_left + r_width
+        b_width = (right_total_people / (left_total_people + right_total_people + 1)) * total_width
+
+        rect1 = pygame.Rect(r_left, r_top, r_width, r_height)
+        rect2 = pygame.Rect(b_left, b_top, b_width, b_height)
+
+        f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+        l_text = f.render("中国队：{people}".format(people=left_total_people), True, (255, 255, 255), None)
+        l_textRect = l_text.get_rect()
+        # if left_total_people == 0:
+        #     l_textRect.center = (r_left, r_top + r_height + 10)
+        # else:
+        #     l_textRect.center = ((r_left + r_width) / 2, r_top + r_height + 10)
+        l_textRect.center = (50, 100)
+
+
+        r_text = f.render("法国队：{people}".format(people=right_total_people), True, (255, 255, 255), None)
+        r_textRect = r_text.get_rect()
+        # if right_total_people == 0:
+        #     r_textRect.center = (b_left, r_top + r_height + 10)
+        # else:
+        #     r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
+        r_textRect.center = (150, 100)
+
+
+        title_text = f.render("总支持人数： ", True, (255, 255, 255), None)
+        title_textRect = title_text.get_rect()
+        title_textRect.center = (40, 30)
+        # 背景填色
+        pygame.draw.rect(self.screen, (255, 204, 0), rect1)
+        pygame.draw.rect(self.screen, (217, 217, 217), rect2)
+        self.screen.blit(l_text, l_textRect)
+        self.screen.blit(r_text, r_textRect)
+        self.screen.blit(title_text, title_textRect)
 
     def render_cell(self, id, color=None):
         if color:
@@ -208,6 +252,7 @@ if __name__ == '__main__':
     font_size = 10
     font_h_ = 20
 
+
     # # 用于在线性空间中以均匀步长生成数字序列
     # w_pos = list(np.linspace(w_left_start, w_left_end, num=w_num, endpoint=True))
     # print(w_pos)
@@ -233,6 +278,7 @@ if __name__ == '__main__':
             self.id = id
             self.name = name
 
+
     left_people_dict = {}
     left_people_queue = queue.Queue(5)
     left_people_queue.put("jack")
@@ -252,7 +298,5 @@ if __name__ == '__main__':
     print(left_people_dict)
     print(left_people_queue.queue)
 
-
-
-    for i in range(1,360):
+    for i in range(1, 360):
         print(i)
