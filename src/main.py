@@ -28,9 +28,8 @@ class Game:
         return screen
 
     def run(self, queue):
-        # self.scene.render_scene() 原始位置
+        self.scene.render_scene() #原始位置
         while True:
-            self.scene.render_scene()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -52,7 +51,7 @@ class Game:
 
                 pygame.display.flip()
                 # display
-                # pygame.display.update()
+                pygame.display.update()
 
 
 if __name__ == "__main__":
