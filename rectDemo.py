@@ -22,11 +22,13 @@ pygame.display.set_caption("Python Demo")
 
 clock = pygame.time.Clock()
 
-total_width = 350
+
 
 r_people = 5
 b_people = 20
 
+
+total_width = 350
 r_left = 80
 r_top = 20
 r_width = (r_people / (r_people + b_people + 1)) * total_width

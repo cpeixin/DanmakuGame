@@ -1,5 +1,6 @@
 import multiprocessing
 import sys
+import time
 
 import pygame
 from src.scene import Scene
@@ -11,12 +12,11 @@ width = 1920
 height = 1080
 
 max_comment = 1000
-#创建时钟对象（控制游戏的FPS）
-clock = pygame.time.Clock()
+left_people = 0
+right_people = 0
+
 
 class Game:
-
-
     def __init__(self, width=width, height=height):
         self.w = width
         self.h = height
@@ -29,110 +29,101 @@ class Game:
         pygame.display.set_caption('世界杯')
         return screen
 
-    def run(self, queue):
-        self.scene.render_scene()
+    def show_score(self, ):
+        GOLD = 255, 251, 0
+        global left_people
+        global right_people
+        # f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+        f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+        # l_text = f.render("中国队：{people}".format(people=left_total_people), True, (255, 255, 255), None)
+        # l_textRect = l_text.get_rect()
+        # if left_total_people == 0:
+        #     l_textRect.center = (r_left, r_top + r_height + 10)
+        # else:
+        #     l_textRect.center = ((r_left + r_width) / 2, r_top + r_height + 10)
+        # l_textRect.center = (50, 100)
+        # l_f1rect = f.render_to(self.screen, [50,100], "中国队：{people}".format(people=left_total_people), fgcolor=GOLD, size=20)
+        l_f1rect = f.render("中国队：{people}".format(people=left_people), True, (255, 255, 255))
 
+        # r_text = f.render("法国队：{people}".format(people=right_total_people), True, (255, 255, 255), None)
+        # r_textRect = r_text.get_rect()
+        # # if right_total_people == 0:
+        # #     r_textRect.center = (b_left, r_top + r_height + 10)
+        # # else:
+        # #     r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
+        # r_textRect.center = (150, 100)
+        # r_f1rect = f.render_to(self.screen, [300,100], "法国队：{people}".format(people=right_total_people), fgcolor=GOLD, size=20)
+        r_f1rect = f.render("法国队：{people}".format(people=right_people), True, (255, 255, 255))
+
+        # title_text = f.render("总支持人数： ", True, (255, 255, 255), None)
+        # title_textRect = title_text.get_rect()
+        # title_textRect.center = (40, 30)
+        # 背景填色
+        # self.screen.blit(l_text, l_textRect)
+        # self.screen.blit(r_text, r_textRect)
+        # self.screen.blit(title_text, title_textRect)
+        self.screen.blit(l_f1rect, (50, 100))
+        self.screen.blit(r_f1rect, (200, 100))
+
+
+    def run(self, queue):
+        self.scene.render_scene()  # 原始位置
         while True:
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            # 总人数
             count = 0
-            l_people = 0
-            r_people = 0
 
-            ## 人数条属性
-            total_width = 350
-            r_left = 80
-            r_top = 20
-            r_height = 20
-            b_top = 20
-            b_height = 20
+            self.show_score()
+
             while not queue.empty() and count < max_comment:
-                # ('bbbbbrent', 'd')
-                # ('bbbbbrent', '加入游戏')
+
                 chat = queue.get()
                 count += 1
                 if chat[1] == "中国必胜":
-                    l_people += 1
                     self.scene.create_person(chat[0], location="left")
+                    global left_people
+                    left_people += 1
                 elif chat[1] == "法国必胜":
-                    r_people += 1
                     self.scene.create_person(chat[0], location="right")
+                    global right_people
+                    right_people += 1
                 elif chat[1] == "平":
                     self.scene.create_person(chat[0], location="middle")
                 elif chat[1] in ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D']:
                     self.scene.change_answer(chat[0], chat[1])
                 else:
                     return
+                pygame.display.flip()
+                # display
 
-                ##------- bar --------##
-                r_width = (r_people / (l_people + r_people + 1)) * total_width
-                b_left = r_left + r_width
-                b_width = (r_people / (l_people + r_people + 1)) * total_width
-
-                rect1 = pygame.Rect(r_left, r_top, r_width, r_height)
-                rect2 = pygame.Rect(b_left, b_top, b_width, b_height)
-
-                f = pygame.font.Font('/Users/cpeixin/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
-                l_text = f.render("中国队：{people}".format(people=l_people), True, (255, 250, 250), None)
-                l_textRect = l_text.get_rect()
-                if l_people == 0:
-                    l_textRect.center = (r_left, r_top + r_height + 10)
-                else:
-                    l_textRect.center = ((r_left + r_width) / 2, r_top + r_height + 10)
-
-                r_text = f.render("法国队：{people}".format(people=r_people), True, (255, 250, 250), None)
-                r_textRect = r_text.get_rect()
-                if r_people == 0:
-                    r_textRect.center = (b_left, r_top + r_height + 10)
-                else:
-                    r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
-
-                title_text = f.render("总支持人数： ", True, (200, 0, 0), None)
-                title_textRect = title_text.get_rect()
-                title_textRect.center = (40, 30)
-                ##------------------##
-
-                pygame.draw.rect(self.screen, (255, 0, 0), rect1)
-                pygame.draw.rect(self.screen, (0, 255, 0), rect2)
-                # pygame.draw.rect(screen, (0, 0, 255), rect1.fit(rect2))
-                self.screen.blit(l_text, l_textRect)
-                self.screen.blit(r_text, r_textRect)
-                self.screen.blit(title_text, title_textRect)
-
-                pygame.draw.rect(self.screen, (255, 0, 0),
-                                 (10 + count * 4, 20, 40 - count * 4, 8))
-                pygame.display.update()
-
-            # display
             pygame.display.update()
-            # 通过时钟对象，指定循环频率，每秒循环60次
-            clock.tick(60)
+
 
 if __name__ == "__main__":
     queue = multiprocessing.Queue()
     game = Game(width, height)
-    # queue.put(("brent", "中国必胜"))
-    # queue.put(("shaqpkuls", "中国必胜"))
-    # queue.put(("王彭彭_Mr", "中国必胜"))
-    # queue.put(("流离半世的苍白", "中国必胜"))
-    # queue.put(("呱呱罗", "中国必胜"))
-    # queue.put(("木林森", "中国必胜"))
-    # queue.put(("一世红黑", "中国必胜"))
-    # queue.put(("davidzhang11", "中国必胜"))
-    # queue.put(("boy", "中国必胜"))
-    # queue.put(("球迷18414666", "中国必胜"))
-    # queue.put(("aspuk", "中国必胜"))
-    # queue.put(("球迷18414698", "中国必胜"))
-    # queue.put(("LYZRiot", "中国必胜"))
-    # queue.put(("fisher", "中国必胜"))
-    # queue.put(("庞大王王王王王", "中国必胜"))
-    # queue.put(("boyfromfy", "中国必胜"))
-    # queue.put(("永远的十号", "中国必胜"))
-    # queue.put(("周品尧Leo", "中国必胜"))
-    # queue.put(("niufei", "中国必胜"))
+    queue.put(("brent", "中国必胜"))
+    queue.put(("shaqpkuls", "中国必胜"))
+    queue.put(("王彭彭_Mr", "中国必胜"))
+    queue.put(("流离半世的苍白", "中国必胜"))
+    queue.put(("呱呱罗", "中国必胜"))
+    queue.put(("木林森", "中国必胜"))
+    queue.put(("一世红黑", "中国必胜"))
+    queue.put(("davidzhang11", "中国必胜"))
+    queue.put(("boy", "中国必胜"))
+    queue.put(("球迷18414666", "中国必胜"))
+    queue.put(("aspuk", "中国必胜"))
+    queue.put(("球迷18414698", "中国必胜"))
+    queue.put(("LYZRiot", "中国必胜"))
+    queue.put(("fisher", "中国必胜"))
+    queue.put(("庞大王王王王王", "中国必胜"))
+    queue.put(("boyfromfy", "中国必胜"))
+    queue.put(("永远的十号", "中国必胜"))
+    queue.put(("周品尧Leo", "中国必胜"))
+    queue.put(("niufei", "中国必胜"))
     # queue.put(("King大智", "中国必胜"))
     # queue.put(("无声", "中国必胜"))
     # queue.put(("torres9", "中国必胜"))
@@ -216,9 +207,9 @@ if __name__ == "__main__":
     # queue.put(("Carragher", "中国必胜"))
     # queue.put(("卡拉格", "中国必胜"))
 
-    queue.put(("1", "中国必胜"))
-    queue.put(("2", "中国必胜"))
-    queue.put(("3", "中国必胜"))
+    # queue.put(("1", "中国必胜"))
+    # queue.put(("2", "中国必胜"))
+    # queue.put(("3", "中国必胜"))
     # queue.put(("4", "中国必胜"))
     # queue.put(("5", "中国必胜"))
     # queue.put(("6", "中国必胜"))
@@ -576,136 +567,35 @@ if __name__ == "__main__":
     # queue.put(("358", "中国必胜"))
     # queue.put(("359", "中国必胜"))
 
-    queue.put(("法国———shaqpkuls", "法国必胜"))
-    queue.put(("法国———王彭彭_Mr", "法国必胜"))
-    # queue.put(("法国———流离半世的苍白", "法国必胜"))
-    # queue.put(("法国———呱呱罗", "法国必胜"))
-    # queue.put(("法国———木林森", "法国必胜"))
-    # queue.put(("法国———一世红黑", "法国必胜"))
-    # queue.put(("法国———davidzhang11", "法国必胜"))
-    # queue.put(("法国———boy", "法国必胜"))
-    # queue.put(("法国———球迷18414666", "法国必胜"))
-    # queue.put(("法国———aspuk", "法国必胜"))
-    # queue.put(("法国———球迷18414698", "法国必胜"))
-    # queue.put(("法国———LYZRiot", "法国必胜"))
-    # queue.put(("法国———fisher", "法国必胜"))
-    # queue.put(("法国———庞大王王王王王", "法国必胜"))
-    # queue.put(("法国———boyfromfy", "法国必胜"))
-    # queue.put(("法国———永远的十号", "法国必胜"))
-    # queue.put(("法国———周品尧Leo", "法国必胜"))
-    # queue.put(("法国———niufei", "法国必胜"))
-    # queue.put(("法国———King大智", "法国必胜"))
-    # queue.put(("法国———无声", "法国必胜"))
-    # queue.put(("法国———torres9", "法国必胜"))
-    # queue.put(("法国———参了个星", "法国必胜"))
-    # queue.put(("法国———红魔吉格斯", "法国必胜"))
-    # queue.put(("法国———老孫", "法国必胜"))
-    # queue.put(("法国———arsenalwin", "法国必胜"))
-    # queue.put(("法国———修炼爱情的心酸", "法国必胜"))
-    # queue.put(("法国———苏锦up", "法国必胜"))
-    # queue.put(("法国———瓜瓜", "法国必胜"))
-    # queue.put(("法国———雷科巴", "法国必胜"))
-    # queue.put(("法国———魔兽世界", "法国必胜"))
-    # queue.put(("法国———巴蒂", "法国必胜"))
-    # queue.put(("法国———两耳失聪", "法国必胜"))
-    # queue.put(("法国———小耳总", "法国必胜"))
-    # queue.put(("法国———伊藤诚", "法国必胜"))
-    # queue.put(("法国———DORT-NIEPAN", "法国必胜"))
-    # queue.put(("法国———天津", "法国必胜"))
-    # queue.put(("法国———太妃糖", "法国必胜"))
-    # queue.put(("法国———南开", "法国必胜"))
-    # queue.put(("法国———兵工厂", "法国必胜"))
-    # queue.put(("法国———908930685", "法国必胜"))
-    # queue.put(("法国———小德", "法国必胜"))
-    # queue.put(("法国———巴西", "法国必胜"))
-    # queue.put(("法国———格子", "法国必胜"))
-    # queue.put(("法国———老村长", "法国必胜"))
-    # queue.put(("法国———低产射手", "法国必胜"))
-    # queue.put(("法国———lvchenglong", "法国必胜"))
-    # queue.put(("法国———猫粮", "法国必胜"))
-    # queue.put(("法国———中国", "法国必胜"))
-    # queue.put(("法国———红魔曼联", "法国必胜"))
-    # queue.put(("法国———cjou", "法国必胜"))
-    # queue.put(("法国———阿根廷", "法国必胜"))
-    # queue.put(("法国———FIFA", "法国必胜"))
-    # queue.put(("法国———失去蝶的花", "法国必胜"))
-    # queue.put(("法国———药厂10号", "法国必胜"))
-    # queue.put(("法国———spearsong", "法国必胜"))
-    # queue.put(("法国———vitalize1992", "法国必胜"))
-    # queue.put(("法国———潜龙在渊__腾必九天", "法国必胜"))
-    # queue.put(("法国———inter镜", "法国必胜"))
-    # queue.put(("法国———丶且听风吟_", "法国必胜"))
-    # queue.put(("法国———雪花", "法国必胜"))
-    # queue.put(("法国———KOP", "法国必胜"))
-    # queue.put(("法国———11141066", "法国必胜"))
-    # queue.put(("法国———qwe", "法国必胜"))
-    # queue.put(("法国———电话12", "法国必胜"))
-    # queue.put(("法国———设计ssd", "法国必胜"))
-    # queue.put(("法国———shdh123", "法国必胜"))
-    # queue.put(("法国———bluepoint", "法国必胜"))
-    # queue.put(("法国———Cloud", "法国必胜"))
-    # queue.put(("法国———JeLeVeux-", "法国必胜"))
-    # queue.put(("法国———S7", "法国必胜"))
-    # queue.put(("法国———Suarez7", "法国必胜"))
-    # queue.put(("法国———传奇", "法国必胜"))
-    # queue.put(("法国———GlenJohnson", "法国必胜"))
-    # queue.put(("法国———LuisSuarez", "法国必胜"))
-    # queue.put(("法国———Sturridge15", "法国必胜"))
-    # queue.put(("法国———LiverpoolFC_待改名", "法国必胜"))
-    # queue.put(("法国———T9", "法国必胜"))
-    # queue.put(("法国———C7", "法国必胜"))
-    # queue.put(("法国———MartinSkrtel", "法国必胜"))
-    # queue.put(("法国———Suso_待改名", "法国必胜"))
-    # queue.put(("法国———Smile", "法国必胜"))
-    # queue.put(("法国———SAS", "法国必胜"))
-    # queue.put(("法国———DanielAgger", "法国必胜"))
-    # queue.put(("法国———Gerrard8", "法国必胜"))
-    # queue.put(("法国———G8", "法国必胜"))
-    # queue.put(("法国———LucasLeiva", "法国必胜"))
-    # queue.put(("法国———杰队", "法国必胜"))
-    # queue.put(("法国———我就是那只泼猴啊", "法国必胜"))
-    # queue.put(("法国———Sakho17", "法国必胜"))
-    # queue.put(("法国———YNWA", "法国必胜"))
-    # queue.put(("法国———Allen", "法国必胜"))
-    # queue.put(("法国———科诺普良卡", "法国必胜"))
-    # queue.put(("法国———红黑之心", "法国必胜"))
-    # queue.put(("法国———科诺普尔扬卡", "法国必胜"))
-    # queue.put(("法国———安菲尔德", "法国必胜"))
-    # queue.put(("法国———Anfield", "法国必胜"))
-    # queue.put(("法国———每个人都在等待-", "法国必胜"))
-    # queue.put(("法国———球盲", "法国必胜"))
-    # queue.put(("法国———Carragher", "法国必胜"))
-    # queue.put(("法国———卡拉格", "法国必胜"))
-
-    # queue.put(("shaqpkuls", "法国必胜"))
-    # queue.put(("王彭彭_Mr", "法国必胜"))
-    # queue.put(("流离半世的苍白", "法国必胜"))
-    # queue.put(("呱呱罗", "法国必胜"))
-    # queue.put(("木林森", "法国必胜"))
-    # queue.put(("一世红黑", "法国必胜"))
-    # queue.put(("davidzhang11", "法国必胜"))
-    # queue.put(("boy", "法国必胜"))
-    # queue.put(("球迷18414666", "法国必胜"))
-    # queue.put(("aspuk", "法国必胜"))
-    # queue.put(("球迷18414698", "法国必胜"))
-    # queue.put(("LYZRiot", "法国必胜"))
-    # queue.put(("fisher", "法国必胜"))
-    # queue.put(("庞大王王王王王", "法国必胜"))
-    # queue.put(("boyfromfy", "法国必胜"))
-    # queue.put(("永远的十号", "法国必胜"))
-    # queue.put(("周品尧Leo", "法国必胜"))
-    # queue.put(("niufei", "法国必胜"))
-    # queue.put(("King大智", "法国必胜"))
-    # queue.put(("无声", "法国必胜"))
-    # queue.put(("torres9", "法国必胜"))
-    # queue.put(("参了个星", "法国必胜"))
-    # queue.put(("红魔吉格斯", "法国必胜"))
-    # queue.put(("老孫", "法国必胜"))
-    # queue.put(("arsenalwin", "法国必胜"))
-    # queue.put(("修炼爱情的心酸", "法国必胜"))
-    # queue.put(("苏锦up", "法国必胜"))
-    # queue.put(("瓜瓜", "法国必胜"))
-    # queue.put(("雷科巴", "法国必胜"))
+    queue.put(("shaqpkuls", "法国必胜"))
+    queue.put(("王彭彭_Mr", "法国必胜"))
+    queue.put(("流离半世的苍白", "法国必胜"))
+    queue.put(("呱呱罗", "法国必胜"))
+    queue.put(("木林森", "法国必胜"))
+    queue.put(("一世红黑", "法国必胜"))
+    queue.put(("davidzhang11", "法国必胜"))
+    queue.put(("boy", "法国必胜"))
+    queue.put(("球迷18414666", "法国必胜"))
+    queue.put(("aspuk", "法国必胜"))
+    queue.put(("球迷18414698", "法国必胜"))
+    queue.put(("LYZRiot", "法国必胜"))
+    queue.put(("fisher", "法国必胜"))
+    queue.put(("庞大王王王王王", "法国必胜"))
+    queue.put(("boyfromfy", "法国必胜"))
+    queue.put(("永远的十号", "法国必胜"))
+    queue.put(("周品尧Leo", "法国必胜"))
+    queue.put(("niufei", "法国必胜"))
+    queue.put(("King大智", "法国必胜"))
+    queue.put(("无声", "法国必胜"))
+    queue.put(("torres9", "法国必胜"))
+    queue.put(("参了个星", "法国必胜"))
+    queue.put(("红魔吉格斯", "法国必胜"))
+    queue.put(("老孫", "法国必胜"))
+    queue.put(("arsenalwin", "法国必胜"))
+    queue.put(("修炼爱情的心酸", "法国必胜"))
+    queue.put(("苏锦up", "法国必胜"))
+    queue.put(("瓜瓜", "法国必胜"))
+    queue.put(("雷科巴", "法国必胜"))
     # queue.put(("魔兽世界", "法国必胜"))
     # queue.put(("巴蒂", "法国必胜"))
     # queue.put(("两耳失聪", "法国必胜"))
