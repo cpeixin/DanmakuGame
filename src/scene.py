@@ -55,18 +55,18 @@ class Scene:
         # 全局变量 记录左右阵营支持的人数
         self.left_total_people = 0
         self.right_total_people = 0
-        self.font = pygame.font.Font("/Users/dongqiudi/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", font_size)
+        self.font = pygame.font.Font("/Users/cpeixin/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", font_size)
 
     def prepare_pic(self):
         # self.map = pygame.image.load("pic/map.jpg").convert()
-        self.map = pygame.image.load("/Users/dongqiudi/PycharmProjects/DanmakuGame/image/backgroud_v1.png").convert()
-        self.r_cell = pygame.image.load("/Users/dongqiudi/PycharmProjects/DanmakuGame/pic/red_cell.png").convert_alpha()
+        self.map = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/image/backgroud_v1.png").convert()
+        self.r_cell = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/pic/red_cell.png").convert_alpha()
         self.y_cell = pygame.image.load(
-            "/Users/dongqiudi/PycharmProjects/DanmakuGame/pic/yello_cell.png").convert_alpha()
+            "/Users/cpeixin/PycharmProjects/DanmakuGame/pic/yello_cell.png").convert_alpha()
         self.b_cell = pygame.image.load(
-            "/Users/dongqiudi/PycharmProjects/DanmakuGame/pic/blue_cell.png").convert_alpha()
+            "/Users/cpeixin/PycharmProjects/DanmakuGame/pic/blue_cell.png").convert_alpha()
         self.g_cell = pygame.image.load(
-            "/Users/dongqiudi/PycharmProjects/DanmakuGame/pic/green_cell.png").convert_alpha()
+            "/Users/cpeixin/PycharmProjects/DanmakuGame/pic/green_cell.png").convert_alpha()
         self.cell = {"r": self.r_cell, "y": self.y_cell, "b": self.b_cell, "g": self.g_cell}
 
     def init_pos(self, ):

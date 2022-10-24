@@ -24,8 +24,8 @@ clock = pygame.time.Clock()
 
 total_width = 350
 
-r_people = 0
-b_people = 0
+r_people = 5
+b_people = 20
 
 r_left = 80
 r_top = 20
@@ -40,7 +40,7 @@ b_height = 20
 rect1 = pygame.Rect(r_left, r_top, r_width, r_height)
 rect2 = pygame.Rect(b_left, b_top, b_width, b_height)
 
-f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+f = pygame.font.Font('/Users/cpeixin/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
 l_text = f.render("中国队：{people}".format(people=r_people), True, (255, 0, 0), None)
 l_textRect = l_text.get_rect()
 if r_people == 0:
