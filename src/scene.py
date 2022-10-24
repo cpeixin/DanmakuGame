@@ -139,7 +139,7 @@ class Scene:
             self.left_people_queue.put(name)
             self.render_person(self.left_people[name], location)
             self.left_total_people += 1
-            self.render_score(self.left_total_people, self.right_total_people)
+            # self.render_score(self.left_total_people, self.right_total_people)
         if location == "right":
             if self.if_have_ids(self.right_ava_ids):
                 id = random.choice(self.right_ava_ids)
@@ -154,7 +154,7 @@ class Scene:
             self.right_people_queue.put(name)
             self.render_person(self.right_people[name], location)
             self.right_total_people += 1
-            self.render_score(self.left_total_people, self.right_total_people)
+            # self.render_score(self.left_total_people, self.right_total_people)
 
     def delete_person(self, name):
         self.ava_ids.append(self.people[name].id)
