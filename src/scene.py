@@ -67,12 +67,12 @@ class Scene:
         self.right_total_people = 0
         self.font = pygame.font.Font("/Users/cpeixin/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", font_size)
 
-        f1 = pygame.freetype.Font(r"/Users/dongqiudi/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", font_size)
+        f1 = pygame.freetype.Font(r"/Users/cpeixin/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", font_size)
         f1rect = f1.render_to(screen, [50,50], "世界和平", fgcolor=GOLD, size=50)
 
     def prepare_pic(self):
         # self.map = pygame.image.load("pic/map.jpg").convert()
-        self.map = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/image/backgroud_v1.png").convert()
+        self.map = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/image/backgroud.png").convert()
         self.r_cell = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/pic/red_cell.png").convert_alpha()
         self.y_cell = pygame.image.load(
             "/Users/cpeixin/PycharmProjects/DanmakuGame/pic/yello_cell.png").convert_alpha()
@@ -203,7 +203,7 @@ class Scene:
         rect2 = pygame.Rect(b_left, b_top, b_width, b_height)
 
         # f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
-        f = pygame.freetype.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+        f = pygame.freetype.Font('/Users/cpeixin/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
         # l_text = f.render("中国队：{people}".format(people=left_total_people), True, (255, 255, 255), None)
         # l_textRect = l_text.get_rect()
         # if left_total_people == 0:

@@ -12,8 +12,7 @@ width = 1920
 height = 1080
 
 max_comment = 1000
-left_people = 0
-right_people = 0
+
 
 
 class Game:
@@ -29,12 +28,10 @@ class Game:
         pygame.display.set_caption('世界杯')
         return screen
 
-    def show_score(self, ):
+    def show_score(self, left_people, right_people):
         GOLD = 255, 251, 0
-        global left_people
-        global right_people
         # f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
-        f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+        f = pygame.font.Font('/Users/cpeixin/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
         # l_text = f.render("中国队：{people}".format(people=left_total_people), True, (255, 255, 255), None)
         # l_textRect = l_text.get_rect()
         # if left_total_people == 0:
@@ -44,7 +41,8 @@ class Game:
         # l_textRect.center = (50, 100)
         # l_f1rect = f.render_to(self.screen, [50,100], "中国队：{people}".format(people=left_total_people), fgcolor=GOLD, size=20)
         l_f1rect = f.render("中国队：{people}".format(people=left_people), True, (255, 255, 255))
-
+        test_l = "中国队：{people}".format(people=left_people)
+        print(test_l)
         # r_text = f.render("法国队：{people}".format(people=right_total_people), True, (255, 255, 255), None)
         # r_textRect = r_text.get_rect()
         # # if right_total_people == 0:
@@ -53,8 +51,10 @@ class Game:
         # #     r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
         # r_textRect.center = (150, 100)
         # r_f1rect = f.render_to(self.screen, [300,100], "法国队：{people}".format(people=right_total_people), fgcolor=GOLD, size=20)
-        r_f1rect = f.render("法国队：{people}".format(people=right_people), True, (255, 255, 255))
-
+        tt = f"法国队：{right_people}"
+        r_f1rect = f.render(tt, True, (255, 255, 255))
+        test_r = "法国队：{people}".format(people=right_people)
+        print(test_r)
         # title_text = f.render("总支持人数： ", True, (255, 255, 255), None)
         # title_textRect = title_text.get_rect()
         # title_textRect.center = (40, 30)
@@ -64,10 +64,13 @@ class Game:
         # self.screen.blit(title_text, title_textRect)
         self.screen.blit(l_f1rect, (50, 100))
         self.screen.blit(r_f1rect, (200, 100))
-
+        pygame.display.update()
 
     def run(self, queue):
         self.scene.render_scene()  # 原始位置
+        left_people = 0
+        right_people = 0
+        f = pygame.font.Font('/Users/cpeixin/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
         while True:
 
             for event in pygame.event.get():
@@ -75,20 +78,17 @@ class Game:
                     pygame.quit()
                     sys.exit()
             count = 0
-
-            self.show_score()
-
             while not queue.empty() and count < max_comment:
 
                 chat = queue.get()
                 count += 1
                 if chat[1] == "中国必胜":
                     self.scene.create_person(chat[0], location="left")
-                    global left_people
                     left_people += 1
+                    tt = f.render("left_people:  "+str(left_people), True, (255, 255, 255))
+                    self.screen.blit(tt, (20, 50))
                 elif chat[1] == "法国必胜":
                     self.scene.create_person(chat[0], location="right")
-                    global right_people
                     right_people += 1
                 elif chat[1] == "平":
                     self.scene.create_person(chat[0], location="middle")
@@ -97,9 +97,9 @@ class Game:
                 else:
                     return
                 pygame.display.flip()
-                # display
-
-            pygame.display.update()
+            #     # display
+            #
+            # pygame.display.update()
 
 
 if __name__ == "__main__":
