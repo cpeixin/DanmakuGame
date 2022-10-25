@@ -14,6 +14,9 @@ height = 1080
 max_comment = 1000
 left_people = 0
 right_people = 0
+fclock = pygame.time.Clock()
+bgImg = pygame.image.load('/Users/dongqiudi/PycharmProjects/DanmakuGame/image/backgroud_v1.png')
+GOLD = 255, 251, 0
 
 
 class Game:
@@ -65,18 +68,19 @@ class Game:
         self.screen.blit(l_f1rect, (50, 100))
         self.screen.blit(r_f1rect, (200, 100))
 
-
     def run(self, queue):
-        self.scene.render_scene()  # 原始位置
-        while True:
+        # self.screen.blit(bgImg, (0, 0))
+        f1 = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
 
+        while True:
+            self.scene.render_scene()  # 原始位置
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
             count = 0
 
-            self.show_score()
+            # self.show_score()
 
             while not queue.empty() and count < max_comment:
 
@@ -86,6 +90,8 @@ class Game:
                     self.scene.create_person(chat[0], location="left")
                     global left_people
                     left_people += 1
+                    # f1.render_to(self.screen, (20, 50), f"得分： {left_people}", fgcolor=GOLD, size=50)
+                    f1.render(f"得分： {left_people}", True, (255,255,0))
                 elif chat[1] == "法国必胜":
                     self.scene.create_person(chat[0], location="right")
                     global right_people
@@ -96,8 +102,9 @@ class Game:
                     self.scene.change_answer(chat[0], chat[1])
                 else:
                     return
-                pygame.display.flip()
+                pygame.display.update()
                 # display
+            fclock.tick(300)
 
             pygame.display.update()
 
