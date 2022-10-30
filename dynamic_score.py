@@ -20,8 +20,8 @@ black = 0, 0, 0
 GOLD = 255, 251, 0
 pos = [230, 160]
 # 引入字体类型
-f1 = pygame.freetype.Font(r"/Users/dongqiudi/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", 36)
-bgImg = pygame.image.load('/Users/dongqiudi/PycharmProjects/DanmakuGame/image/backgroud.jpg')
+f1 = pygame.freetype.Font(r"/Users/cpeixin/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", 36)
+bgImg = pygame.image.load('/Users/cpeixin/PycharmProjects/DanmakuGame/image/backgroud.jpg')
 fps = 300
 fclock = pygame.time.Clock()
 

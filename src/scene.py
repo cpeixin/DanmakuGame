@@ -4,6 +4,7 @@ import pygame
 import numpy as np
 from src.person import Person
 import pygame.freetype
+
 # w_start = 27
 # w_end = 1454
 # w_num = 45
@@ -16,12 +17,12 @@ import pygame.freetype
 
 # 左侧显示玩家范围
 w_left_start = 60
-w_left_end = 750
+w_left_end = 700
 h_left_start = 300
 h_left_end = 1080
 
 # 右侧显示玩家范围
-w_right_start = 1070
+w_right_start = 1100
 w_right_end = 1800
 h_right_start = 300
 h_right_end = 1080
@@ -31,12 +32,12 @@ w_num = 35
 h_num = 20
 
 # 字体设置
-font_size = 10
+font_size = 13
 font_h_ = 20
 
 # 得分条
 total_width = 350
-r_left = 80
+r_left = 1500
 r_top = 20
 r_height = 20
 
@@ -44,6 +45,7 @@ b_height = 20
 b_top = 20
 
 GOLD = 255, 251, 0
+
 
 class Scene:
     def __init__(self, screen):
@@ -68,11 +70,14 @@ class Scene:
         self.font = pygame.font.Font("/Users/cpeixin/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", font_size)
 
         f1 = pygame.freetype.Font(r"/Users/cpeixin/PycharmProjects/DanmakuGame/font/BOBOHEI-2.otf", font_size)
-        f1rect = f1.render_to(screen, [50,50], "世界和平", fgcolor=GOLD, size=50)
+        f1rect = f1.render_to(screen, [50, 50], "世界和平", fgcolor=GOLD, size=50)
 
     def prepare_pic(self):
         # self.map = pygame.image.load("pic/map.jpg").convert()
-        self.map = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/image/backgroud.png").convert()
+        self.map = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/image/backgroud_v2.jpg").convert()
+        # ！！！透明 convert_alpha
+        self.left_team = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/image/real-madrid-ai.png").convert_alpha()
+        self.right_team = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/image/haoluona.png").convert_alpha()
         self.r_cell = pygame.image.load("/Users/cpeixin/PycharmProjects/DanmakuGame/pic/red_cell.png").convert_alpha()
         self.y_cell = pygame.image.load(
             "/Users/cpeixin/PycharmProjects/DanmakuGame/pic/yello_cell.png").convert_alpha()
@@ -123,6 +128,14 @@ class Scene:
             return
         if name in self.right_people and location == "right":
             return
+        # 判断当前用户是否已经在对方阵营
+        if name in self.left_people and location == "right":
+            person = self.left_people[name]
+            id = person.id
+            self.left_total_people -= 1
+            self.ava_ids.append(id)
+            # self.left_people.pop(name)
+            # self.screen.blit(person.name, (0, 0))
 
         # 此处逻辑 如果位置满了，只展示最新评论的玩家，这样可以刺激大家刷评论
         if location == "left":
@@ -139,7 +152,7 @@ class Scene:
             self.left_people_queue.put(name)
             self.render_person(self.left_people[name], location)
             self.left_total_people += 1
-            # self.render_score(self.left_total_people, self.right_total_people)
+            self.render_score(self.left_total_people, self.right_total_people)
         if location == "right":
             if self.if_have_ids(self.right_ava_ids):
                 id = random.choice(self.right_ava_ids)
@@ -154,7 +167,7 @@ class Scene:
             self.right_people_queue.put(name)
             self.render_person(self.right_people[name], location)
             self.right_total_people += 1
-            # self.render_score(self.left_total_people, self.right_total_people)
+            self.render_score(self.left_total_people, self.right_total_people)
 
     def delete_person(self, name):
         self.ava_ids.append(self.people[name].id)
@@ -180,7 +193,8 @@ class Scene:
 
     def render_map(self):
         self.screen.blit(self.map, (0, 0))
-
+        self.screen.blit(self.left_team, (0, 40))
+        self.screen.blit(self.right_team, (1400, 102))
 
     # 指定玩家位置
     def render_person(self, person, location):
@@ -202,37 +216,30 @@ class Scene:
         rect1 = pygame.Rect(r_left, r_top, r_width, r_height)
         rect2 = pygame.Rect(b_left, b_top, b_width, b_height)
 
-        # f = pygame.font.Font('/Users/dongqiudi/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
-        f = pygame.freetype.Font('/Users/cpeixin/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
-        # l_text = f.render("中国队：{people}".format(people=left_total_people), True, (255, 255, 255), None)
-        # l_textRect = l_text.get_rect()
-        # if left_total_people == 0:
-        #     l_textRect.center = (r_left, r_top + r_height + 10)
-        # else:
-        #     l_textRect.center = ((r_left + r_width) / 2, r_top + r_height + 10)
-        # l_textRect.center = (50, 100)
-        l_f1rect = f.render_to(self.screen, [50,100], "中国队：{people}".format(people=left_total_people), fgcolor=GOLD, size=20)
+        f = pygame.font.Font('/Users/cpeixin/PycharmProjects/DanmakuGame/font/simsun.ttc', 10)
+        l_text = f.render("中国队：{people}".format(people=left_total_people), True, (255, 255, 255), None)
+        l_textRect = l_text.get_rect()
+        if left_total_people == 0:
+            l_textRect.center = (r_left, r_top + r_height + 10)
+        else:
+            l_textRect.center = ((r_left + r_width) / 2, r_top + r_height + 10)
 
+        r_text = f.render("法国队：{people}".format(people=right_total_people), True, (255, 255, 255), None)
+        r_textRect = r_text.get_rect()
+        if right_total_people == 0:
+            r_textRect.center = (b_left, r_top + r_height + 10)
+        else:
+            r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
 
-        # r_text = f.render("法国队：{people}".format(people=right_total_people), True, (255, 255, 255), None)
-        # r_textRect = r_text.get_rect()
-        # # if right_total_people == 0:
-        # #     r_textRect.center = (b_left, r_top + r_height + 10)
-        # # else:
-        # #     r_textRect.center = (r_left + r_width + b_width / 2, r_top + r_height + 10)
-        # r_textRect.center = (150, 100)
-        r_f1rect = f.render_to(self.screen, [300,100], "法国队：{people}".format(people=right_total_people), fgcolor=GOLD, size=20)
-
-        # title_text = f.render("总支持人数： ", True, (255, 255, 255), None)
-        # title_textRect = title_text.get_rect()
-        # title_textRect.center = (40, 30)
+        title_text = f.render("支持人数占比： ", True, (255, 255, 255), None)
+        title_textRect = title_text.get_rect()
+        title_textRect.center = (1450, 30)
         # 背景填色
         pygame.draw.rect(self.screen, (255, 204, 0), rect1)
         pygame.draw.rect(self.screen, (217, 217, 217), rect2)
         # self.screen.blit(l_text, l_textRect)
         # self.screen.blit(r_text, r_textRect)
-        # self.screen.blit(title_text, title_textRect)
-        pygame.display.update()
+        self.screen.blit(title_text, title_textRect)
 
     def render_cell(self, id, color=None):
         if color:

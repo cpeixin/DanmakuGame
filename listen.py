@@ -4,7 +4,7 @@ import blivedm
 
 # 直播间ID的取值看直播间URL
 TEST_ROOM_IDS = [
-    1128,
+    26102474,
 ]
 
 
